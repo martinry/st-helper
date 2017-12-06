@@ -1,87 +1,84 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Tue Dec  5 15:14:32 2017
-
-@author: martin
-"""
 
 import pandas as pd
 
 filename = 'acacia.csv'
 
+# Read csv as dataframe
 df = pd.read_csv(filename, sep=';')
 
+# Variable name for statistical tests
 varname = filename.split('.')[0]
 
 # Separates text with blank line, or awaits key click
 def sep():
     print()
     #input()
-    
-    #s = '- ' * 10
-    #print('%s' % s)
 
 def dt_analysis(df):
+    # Initialize dictionary with column names
+    # This dict will hold the datatype for each column
     dt = {c:'' for c in df.columns}
-    
-    print("\t###### DATA ANALYSIS ######")
     
     # Display 5 initial rows
     def overview(df):
-        print('# Dataset overview\n')
-        print(df.head())
-        print('(...)')
-    
+        return df.head()
+
     # Display number of rows and columns
-    def shape(df, info):
+    def dimensions(df):
         sep()
-        print('# Dimensions%s\n' % info)
         nr_rows     = df.shape[0]
         nr_columns  = df.shape[1]
-        print('Rows: %d, Columns: %d' %
-              (nr_rows, nr_columns))
-    
+        return (nr_rows, nr_columns)
+
     # Count and remove rows with null values
     def null_values(df):
-        sep()
-        print('# Empty values\n')
+        # Columns where empty values are present
         null_vals = [column for column in df.columns if df[column].isnull().values.any()]
+        
+        # If any column with empty values exists
         if len(null_vals) > 0:
             print('Null values found in: \n%s' % ('\n'.join(null_vals)))
-            print('\nRemoving rows with empty values (for analysis, don\'t worry)...')
+            print('\nRemoving rows with empty values...')
             
             # Remove rows with null values
             df = df.dropna(how='any')
             
-            # Run shape to recheck dimensions
-            shape(df, ' (updated)')
-            return df # Don't forget to return dataframe if you have made changes to it
+            # Recheck dimensions
+            print( dimensions(df), '(updated)')
+            
+            return df # Return updated dataframe
+            
         else:
             print('No null values found.\n')
-            return df
+            return df # Return unchanged dataframe
     
+    # Display pandas interpretation of datatypes (int64, float64, object etc.)
     def data_types(df):
-        sep()
-        print('# Data types\n')
         for column in df.columns:
             print(column, '\t%s' % df[column].dtypes)
-#        print(df.dtypes)
     
+    # Number of unique values in each column (null-values exluded)
     def uniques(df):
-        sep()
+        # Initialize dictionary with column names
+        # all values set to 0
         uniq = {c:0 for c in df.columns}
-        #print('# Number of unique values in columns\n')
+        
+        # Iterate df by column
         for column in df.columns:
+            # Add all column values into a list
             x = [v for v in df[column]]
-            #print(column, '\t%d' % len(set(x)))
+            
+            # set = the unique values in the column
+            # len = the number of unique values in the column
+            # Update dict: key = column name, value = nr uniques
             uniq[column] = len(set(x))
         return uniq
 
+    # This is where we suggest the datatype for each column
+    # for the user to specify in R
     def suggested_type(df, cid):
-        sep()
-        print('# Suggested type\n')
-        
         # Check if we've been here before
         #if all(item == '' for item in dt.values()):
             
@@ -199,26 +196,41 @@ def dt_analysis(df):
                 
                 #for item in df[num]:
                  #   print(item)
-                
-                
-                    
+
                 
                # print('%s.test <- cbind(%s' % (varname, (x for x in cbind)))
                 
                 
-                
-      
-
+    # 1.
+    print('#1. Dataset overview\n')
+    print( overview(df) )
+    print('(...)')
     
-    overview(df)
-    shape(df,'')
+    # 2.
+    print('\n#2. Dimensions')
+    shape = dimensions(df)
+    print('Rows: %d, Columns: %d' % (shape[0], shape[1]))
+    
+    # 3.
+    print('\n#3. Empty values\n')
     df = null_values(df)
+    
+    # 4.
+    print('\n#4. Data types\n')
     data_types(df)
     uniq = uniques(df)
-    print('# Number of unique values in columns')
+    
+    # 5.
+    print('\n#5. Number of unique values in columns\n')
     for k,v in uniq.items():
         print(k, v)
+    
+    # 6. in progress
+    print('\# Suggested type\n')
     suggested_type(df,0)
+    
+    # 7. in progress
+    
     #tree(df)
     return(df)
 
