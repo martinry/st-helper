@@ -12,12 +12,6 @@ class data(object):
     # Variable name for statistical tests
     varname = filename.split('.')[0]
 
-# Separates text with blank line, or awaits key click
-def sep():
-    print()
-    #input()
-
-
 # Initialize dictionary with column names
 # This dict will hold the datatype for each column
 dt = {c:'' for c in data.df.columns}
@@ -28,7 +22,6 @@ def overview(df):
 
 # Display number of rows and columns
 def dimensions(df):
-    sep()
     nr_rows     = df.shape[0]
     nr_columns  = df.shape[1]
     return (nr_rows, nr_columns)
