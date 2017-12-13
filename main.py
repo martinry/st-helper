@@ -35,8 +35,8 @@ class column(object):
         self.dtype = new_dtype
         
     def set_level(self, new_level):
-        self.level = new_level
-        
+        self.level = new_level   
+    
     def suggest_dtype(self):
         if self.dtype == 'float64':
             self.set_dtype('Numeric')
@@ -54,18 +54,16 @@ class column(object):
         elif self.dtype == 'object':
             self.set_dtype('Factor')
             self.set_level(len(set(self.data)))             
-        #self.summary()
-
-    def summary(self):
-        print('Name: ' + self.get_name())
-        print('Type: ' + str(self.get_dtype()))
-        print('Levels: ' + str(self.get_level()))
                 
     def switch_dtype(self):
         if self.get_dtype() == 'Factor':
             self.set_dtype('Numeric')
+            self.set_level(None)
         else:
             self.set_dtype('Factor')
+            self.set_level(len(set(self.data)))
+    
+    
     
 if __name__ == '__main__':
     filename = 'tiger.csv'
@@ -89,12 +87,13 @@ if __name__ == '__main__':
             feedback = input('Which column\'s datatype should be changed? (select number): ')
             cols[int(feedback) - 1].switch_dtype()
             print()
-            for i,c in enumerate(cols):
-                print('%d.\t%s\t%s\t%s' % (i+1, c.get_name(), c.get_dtype(), c.get_level()))
-            
-            feedback = input('Is there any other change to be made? y/n: ')
-            if feedback not in ['no', 'No', 'NO', 'n', 'N']:
-                check_dtype()
+            check_dtype()
                 
     check_dtype()
+    
+    
+    
+    
 
+    
+        
